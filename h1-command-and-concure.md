@@ -68,5 +68,9 @@ Even in a home setup, there are other people and services that are affected by h
 ---
 
 ## References
-ISO/IEC (2022) *ISO/IEC 27001:2022 Information security, cybersecurity and privacy protection — Information security management systems — Requirements*. Geneva: International Organization for Standardization.
+
+- ISMS.online. (2025). ISO 27001 Requirements - Free Overview. [online] Available at: https://www.isms.online/iso-27001/requirements-2013/.
+- ISO/IEC (2022) *ISO/IEC 27001:2022 Information security, cybersecurity and privacy protection — Information security management systems — Requirements*. Geneva: International Organization for Standardization.
+
+‌
 
