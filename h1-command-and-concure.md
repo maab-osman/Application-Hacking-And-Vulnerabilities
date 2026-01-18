@@ -10,7 +10,7 @@ The purpose of this scope is to keep my study environment reliable and secure so
 - Home network that consists of Zyxel router, my Wi-Fi network, and basic router settings (the stuff I can actually configure myself).
 - Study devices I use for the course including a ThinkPad laptop (Linux), VirtualBox for lab VMs, my phone for MFA, and iPad for taking notes.
 - Storage I use for schoolwork icluding Haaga-Helia OneDrive, local storage on my laptop, and my personal iCloud (mainly for syncing notes/files).
-- Credentials are stored either in my password manager and/or as SSH keys on my laptop (not inside the repo).
+- Credentials are stored either in my password manager and/or as SSH keys on my laptop.
 - Information handled for the course like course materials, my own notes, GitHub repositories, and any credentials used in labs
 
 ### 2. Out-of-scope
