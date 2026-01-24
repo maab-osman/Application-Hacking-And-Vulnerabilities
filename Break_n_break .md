@@ -1,1 +1,149 @@
+<img width="1024" height="616" alt="Screenshot 2026-01-25 at 12 02 48 AM" src="https://github.com/user-attachments/assets/0acfeaa9-59f0-4936-85d3-f6300fe0fe86" /># H2 Break & Unbreak
+
+## x) Summary of Materials
+
+### OWASP: A01 Broken Access Control
+- Broken Access Control happens when authorization rules are missing or incorrectly enforced on the server side
+- It allows users to access data, functions, or pages beyond their intended permissions
+- Common causes include insecure direct object references (IDOR), missing role checks, URL or parameter manipulation, and privilege escalation
+- This vulnerability is extremely common and ranks as the most critical risk in the OWASP Top 10
+- Secure design requires deny by default, centralized authorization logic, least privilege, and thorough access control testing
+
+  
+### Fuzzing URLs with ffuf (Karvinen 2023)
+- Directory fuzzing is a reconnaissance technique used to discover hidden or unlinked web paths
+- ffuf is a fast web fuzzer that replaces a keyword in a URL with values from a wordlist
+- Wordlists such as SecLists contain thousands of common directory and file names
+- False positives are common whic is filtering by response size, words, or lines helps isolate meaningful results
+- Successfully discovered directories may expose sensitive functionality and enable further attacks
+
+Excercise
+- Opening 2 terminals one running the vulnerable server and on to run `ffuf`
+- We run the first command to download the sample target sample
+  
+ ```
+$ wget https://terokarvinen.com/2023/fuzz-urls-find-hidden-directories/dirfuzt-0
+$ chmod u+x dirfuzt-0
+$ ./dirfuzt-0
+```
+- We open the our local to see somethig like this:
+
+<img width="736" height="395" alt="Screenshot 2026-01-24 at 7 22 31 PM" src="https://github.com/user-attachments/assets/8098ea32-5d1d-4829-9221-dd679fdbcd80" />
+
+- In the other terminal i will install ffuf
+  
+ ```
+sudo apt update
+sudo apt install fuff
+
+```
+- In the same terminal I will get a wordlist
+  
+ ```
+wget https://raw.githubusercontent.com/danielmiessler/SecLists/master/Discovery/Web-Content/common.txt
+
+```
+- Ran ffuf to fuzz directories:
+
+ ``` ./ffuf -w common.txt -u http://127.0.0.2:8000/FUZZ  ```
+
+ <img width="973" height="519" alt="Screenshot 2026-01-24 at 9 16 44 PM" src="https://github.com/user-attachments/assets/64ca6f66-ec4f-4052-9761-fc893bfc032c" />
+
+
+- Filtered out empty responses to identify real directories:
+
+ ``` ./ffuf -w common.txt -u http://127.0.0.2:8000/FUZZ -fs 132  ```
+
+- I mananged to find the hidden directory: /admin
+- Verified it in the browser and the page actually said "You've found it!".
+- This concludes that just because a directory like /admin isn't linked on the homepage doesn't mean it's safe. If it's on the server, a fuzzer will find it.
+
+
+### Access Control & Privilege Escalation - PortSwigger
+- Access control defines what an authenticated user is allowed to do within an application
+- Vulnerabilities occur when these rules are missing, inconsistent, or incorrectly implemented on the server side
+- Vertical privilege escalation allows a normal user to access admin-only functionality
+- Horizontal privilege escalation allows a user to access another user’s data or actions at the same privilege level
+- Insecure Direct Object References (IDOR) occur when identifiers are exposed and not properly validated
+- PortSwigger emphasizes that hiding functionality or relying on client-side controls is not sufficient that's access control must always be enforced server-side
+
+### Report Writing (Karvinen 2006)
+- Write so another person can reproduce your results in the same environment
+- Record exact commands, actions, and outcomes including failures
+- Use clear structure, headings, and simple language
+- Explain what was done, why it was done, and what was learned
+- Cite all sources and never claim work you did not do
+- In security work, the report is often the main deliverable
+- A clear report builds trust and proves the work was done systematically
+
+### a) Break: 010-staff-only
+
+- I started by installing the Python web frameworks by running ```sudo apt-get -y install wget unzip micro python3-flask python3-flask-sqlalchemy```
+- Then downloaded the lab and unzipped it then running ```staff-only.py``` on my terminal
+  <img width="1008" height="307" alt="Screenshot 2026-01-24 at 11 06 42 PM" src="https://github.com/user-attachments/assets/aa39c18d-3c40-4a94-828f-2790a95fe906" />
+
+- I opened the web interface and started testing the hint ```123```
+  <img width="1558" height="790" alt="Screenshot 2026-01-24 at 11 07 34 PM" src="https://github.com/user-attachments/assets/d5eefcf0-3dbb-483c-8bf2-80474fdfb3a8" />
+
+- Since we are supposed to find the admin, we can try a common injection ```' OR 1=1--```
+- First we change the variable type from number to String and this is the result:
+  
+  <img width="711" height="391" alt="Screenshot 2026-01-24 at 11 10 13 PM" src="https://github.com/user-attachments/assets/3d2c7286-3def-48ab-8eb8-caf83c6fd48a" />
+
+- To find the admin password, we could modify this injection to give us something similar to a ```SUPERADMIN```
+- hence in the same way we inject ``` OR password LIKE '%SUPERADMIN%'-- ```
+  
+  <img width="1477" height="396" alt="Screenshot 2026-01-24 at 11 15 05 PM" src="https://github.com/user-attachments/assets/12222935-1b01-4ce1-9e19-aabb3500a223" />
+
+- We have successfully found it!
+
+
+### b) Fix: 010-staff-only
+- I opened staff-only.py using micro and found the line where the search query was built.
+  <img width="1003" height="795" alt="Screenshot 2026-01-24 at 11 19 59 PM" src="https://github.com/user-attachments/assets/1e2a4810-6060-49f3-baf5-a7d4ab87ee01" />
+
+-  The biggest problem is on line 18. I saw that the code uses + pin + to glue the user's input directly into the SQL string. This is exactly what allowed me to break out of the query using a single quote.
+-  The code takes the pin from the form and just converts it to a string (str()). It doesn't check for special characters like --, OR, or ;, so it basically trusts whatever the user types.
+-  On line 22, the code calls ```db.session.commit()``` after a ```SELECT``` statement. While not a security hole, it's a performance mistake.
+
+Fix
+-  I removed the ```+ pin +``` part of the SQL string. Instead of putting the data directly in the string, I put a colon placeholder ```(:pin)```.
+-  Also, When calling ```db.session.execute()```, I passed the actual pin variable as a second argument.
+
+```
+# Secure: input is treated as a separate value
+sql = "SELECT password FROM pins WHERE pin = :pin"
+res = db.session.execute(text(sql), {"pin": pin})
+
+```
+- Then I ran the python file again to see if the vulnerability still exits.
+  
+<img width="1144" height="634" alt="Screenshot 2026-01-24 at 11 26 33 PM" src="https://github.com/user-attachments/assets/a9f1ccc5-d189-4db6-825d-674f167dac84" />
+
+- It's fixed!
+
+### c) Fuzzing: dirfuzt-1
+- Started by installing ```dirfuzt-1``` on the terminal
+<img width="1020" height="617" alt="Screenshot 2026-01-25 at 12 03 49 AM" src="https://github.com/user-attachments/assets/4a928e27-87dd-4321-9a18-f154ed0f3e6c" />
+
+- Then I ran ``ffuf`` and noticed that most size were 154 bytes.
+  
+<img width="1134" height="618" alt="Screenshot 2026-01-25 at 12 05 28 AM" src="https://github.com/user-attachments/assets/3b5001cf-9efe-44f5-b3ef-95deb9d172eb" />
+
+- THerefore I have decided to filter by that
+
+```
+$ ./ffuf -w common.txt -u http://127.0.0.2:8000/FUZZ -fs 154
+
+```
+<img width="1124" height="633" alt="Screenshot 2026-01-25 at 12 06 58 AM" src="https://github.com/user-attachments/assets/e9153adb-8baf-481c-988a-aaa47dc50411" />
+
+- I found 4 matching responses, so lets try ``` /.git ``` and here is the response:
+
+  <img width="1098" height="628" alt="Screenshot 2026-01-25 at 12 09 11 AM" src="https://github.com/user-attachments/assets/c5240778-47bc-4286-a15f-af6b8ad65c58" />
+
+
+### d) Break: 020-your-eyes-only
+
+### e) Fix: 020-your-eyes-only
 
