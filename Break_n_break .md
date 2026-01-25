@@ -187,6 +187,14 @@ $ ./ffuf -w common.txt -u http://127.0.0.2:8000/FUZZ -fs 154
   
 - After modifying and running again, the vulnerability seems to be fixed.
 <img width="1090" height="146" alt="Screenshot 2026-01-25 at 10 21 41 AM" src="https://github.com/user-attachments/assets/93471dc7-643a-4946-9776-a114bfbb7f94" />
+
 ---
+### Refrences 
+- Karvinen, T. (2006). Raportin kirjoittaminen. [online] Terokarvinen.com. Available at: https://terokarvinen.com/2006/raportin-kirjoittaminen-4/ [Accessed 25 Jan. 2026].
+- Karvinen, T. (2023). Fuzz URLs - Find Hidden Directories. [online] Terokarvinen.com. Available at: https://terokarvinen.com/2023/fuzz-urls-find-hidden-directories/ [Accessed 25 Jan. 2026].
+- Karvinen, T. (2024). Hack’n Fix. [online] Terokarvinen.com. Available at: https://terokarvinen.com/hack-n-fix/ [Accessed 25 Jan. 2026].
+- Open Worldwide Application Security Project (OWASP) (2021). A01:2021 – Broken Access Control. [online] Owasp.org. Available at: https://owasp.org/Top10/2021/A01_2021-Broken_Access_Control/index.html [Accessed 25 Jan. 2026].
+- OpenAI(2024). Large Language Model. [online] Assisted in structuring the Markdown (MD) report template and troubleshooting environment setup.
+- PortSwigger (2024). Access Control. [online] Portswigger.net. Available at: https://portswigger.net/web-security/access-control [Accessed 25 Jan. 2026].
 
 
