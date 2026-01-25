@@ -1,4 +1,3 @@
-<img width="1024" height="616" alt="Screenshot 2026-01-25 at 12 02 48 AM" src="https://github.com/user-attachments/assets/0acfeaa9-59f0-4936-85d3-f6300fe0fe86" /># H2 Break & Unbreak
 
 ## x) Summary of Materials
 
@@ -144,6 +143,24 @@ $ ./ffuf -w common.txt -u http://127.0.0.2:8000/FUZZ -fs 154
 
 
 ### d) Break: 020-your-eyes-only
+
+- I navigated to the second challenge directory, created a Python ```virtualenv``` , and installed the requirements.
+-  I ran the migrations to set up the database and started the Django server.
+
+<img width="786" height="95" alt="Screenshot 2026-01-25 at 9 31 28 AM" src="https://github.com/user-attachments/assets/af0ac1f4-9f1c-4940-88b6-bbb590e81aa1" />
+
+-  I registered and logged in. But when I pressed the admin dashboard I got an error
+<img width="805" height="231" alt="Screenshot 2026-01-25 at 9 32 04 AM" src="https://github.com/user-attachments/assets/d661c7da-1514-4091-acf0-bf3f9eb56af7" />
+
+
+-  So I used ```ffuf``` to scan the site. I found a hidden directory called ```/admin-console/```
+
+  <img width="822" height="105" alt="Screenshot 2026-01-25 at 9 32 44 AM" src="https://github.com/user-attachments/assets/843f4ab7-05ff-4322-a8ad-e7d1efa5f383" />
+
+- I went straight to ```http://127.0.0.1:8000/admin-console/```. It worked!
+<img width="1025" height="415" alt="Screenshot 2026-01-25 at 9 34 26 AM" src="https://github.com/user-attachments/assets/734926f4-5603-41e9-b239-348de43e2e81" />
+
+- This is an Insecure Direct Object Reference (IDOR) or Broken Access Control. The developer assumed only admins would know the URL, or they forgot to verify user roles.
 
 ### e) Fix: 020-your-eyes-only
 
