@@ -163,4 +163,18 @@ $ ./ffuf -w common.txt -u http://127.0.0.2:8000/FUZZ -fs 154
 - This is an Insecure Direct Object Reference (IDOR) or Broken Access Control. The developer assumed only admins would know the URL, or they forgot to verify user roles.
 
 ### e) Fix: 020-your-eyes-only
+- First I need to find the source file using the grep command, but it did not directly lead me to it since it was scanning binary files. So I started narrowing down to files containing the "admin-console"
+
+  <img width="1029" height="126" alt="Screenshot 2026-01-25 at 10 19 44 AM" src="https://github.com/user-attachments/assets/b5ec4d28-7ada-4031-a618-abb028c4d4ea" />
+
+- After finally finding it in the ```urls.py```, it turns out the the paths are linked to anoother file called ```views.py```. So I navigated to that file.
+- The issue is clear here, the ```AdminShowAllView``` currently allows any authenticated user to access it.
+- This means that any one logged it can access the admin console which is a dangerous.
+- In order to fix this, I have to modify it to restrict access.
+- the fix was simple, it was to modidy the ```test_func``` in ```AdminShowAll``` to restrict only to staff members.
+  <img width="1060" height="156" alt="Screenshot 2026-01-25 at 10 20 43 AM" src="https://github.com/user-attachments/assets/b13753a1-cffa-484c-a0da-499b597ec999" />
+  
+- After modifying and running again, the vulnerability seems to be fixed.
+<img width="1090" height="146" alt="Screenshot 2026-01-25 at 10 21 41 AM" src="https://github.com/user-attachments/assets/93471dc7-643a-4946-9776-a114bfbb7f94" />
+
 
