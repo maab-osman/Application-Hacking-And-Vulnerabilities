@@ -1,4 +1,4 @@
-
+# H2 Break & Unbreak - Tero
 ## x) Summary of Materials
 
 ### OWASP: A01 Broken Access Control
@@ -8,7 +8,8 @@
 - This vulnerability is extremely common and ranks as the most critical risk in the OWASP Top 10
 - Secure design requires deny by default, centralized authorization logic, least privilege, and thorough access control testing
 
-  
+ ---
+ 
 ### Fuzzing URLs with ffuf (Karvinen 2023)
 - Directory fuzzing is a reconnaissance technique used to discover hidden or unlinked web paths
 - ffuf is a fast web fuzzer that replaces a keyword in a URL with values from a wordlist
@@ -57,6 +58,7 @@ wget https://raw.githubusercontent.com/danielmiessler/SecLists/master/Discovery/
 - Verified it in the browser and the page actually said "You've found it!".
 - This concludes that just because a directory like /admin isn't linked on the homepage doesn't mean it's safe. If it's on the server, a fuzzer will find it.
 
+---
 
 ### Access Control & Privilege Escalation - PortSwigger
 - Access control defines what an authenticated user is allowed to do within an application
@@ -65,6 +67,8 @@ wget https://raw.githubusercontent.com/danielmiessler/SecLists/master/Discovery/
 - Horizontal privilege escalation allows a user to access another user’s data or actions at the same privilege level
 - Insecure Direct Object References (IDOR) occur when identifiers are exposed and not properly validated
 - PortSwigger emphasizes that hiding functionality or relying on client-side controls is not sufficient that's access control must always be enforced server-side
+  
+---
 
 ### Report Writing (Karvinen 2006)
 - Write so another person can reproduce your results in the same environment
@@ -74,6 +78,8 @@ wget https://raw.githubusercontent.com/danielmiessler/SecLists/master/Discovery/
 - Cite all sources and never claim work you did not do
 - In security work, the report is often the main deliverable
 - A clear report builds trust and proves the work was done systematically
+  
+---
 
 ### a) Break: 010-staff-only
 
@@ -96,6 +102,7 @@ wget https://raw.githubusercontent.com/danielmiessler/SecLists/master/Discovery/
 
 - We have successfully found it!
 
+---
 
 ### b) Fix: 010-staff-only
 - I opened staff-only.py using micro and found the line where the search query was built.
@@ -120,6 +127,8 @@ res = db.session.execute(text(sql), {"pin": pin})
 <img width="1144" height="634" alt="Screenshot 2026-01-24 at 11 26 33 PM" src="https://github.com/user-attachments/assets/a9f1ccc5-d189-4db6-825d-674f167dac84" />
 
 - It's fixed!
+  
+---
 
 ### c) Fuzzing: dirfuzt-1
 - Started by installing ```dirfuzt-1``` on the terminal
@@ -141,6 +150,7 @@ $ ./ffuf -w common.txt -u http://127.0.0.2:8000/FUZZ -fs 154
 
   <img width="1098" height="628" alt="Screenshot 2026-01-25 at 12 09 11 AM" src="https://github.com/user-attachments/assets/c5240778-47bc-4286-a15f-af6b8ad65c58" />
 
+---
 
 ### d) Break: 020-your-eyes-only
 
@@ -161,6 +171,7 @@ $ ./ffuf -w common.txt -u http://127.0.0.2:8000/FUZZ -fs 154
 <img width="1025" height="415" alt="Screenshot 2026-01-25 at 9 34 26 AM" src="https://github.com/user-attachments/assets/734926f4-5603-41e9-b239-348de43e2e81" />
 
 - This is an Insecure Direct Object Reference (IDOR) or Broken Access Control. The developer assumed only admins would know the URL, or they forgot to verify user roles.
+---
 
 ### e) Fix: 020-your-eyes-only
 - First I need to find the source file using the grep command, but it did not directly lead me to it since it was scanning binary files. So I started narrowing down to files containing the "admin-console"
@@ -176,5 +187,6 @@ $ ./ffuf -w common.txt -u http://127.0.0.2:8000/FUZZ -fs 154
   
 - After modifying and running again, the vulnerability seems to be fixed.
 <img width="1090" height="146" alt="Screenshot 2026-01-25 at 10 21 41 AM" src="https://github.com/user-attachments/assets/93471dc7-643a-4946-9776-a114bfbb7f94" />
+---
 
 
