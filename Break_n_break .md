@@ -54,9 +54,9 @@ wget https://raw.githubusercontent.com/danielmiessler/SecLists/master/Discovery/
 
  ``` ./ffuf -w common.txt -u http://127.0.0.2:8000/FUZZ -fs 132  ```
 
-- I mananged to find the hidden directory: /admin
+- I mananged to find the hidden directory: ```/admin```
 - Verified it in the browser and the page actually said "You've found it!".
-- This concludes that just because a directory like /admin isn't linked on the homepage doesn't mean it's safe. If it's on the server, a fuzzer will find it.
+- This concludes that just because a directory like ```/admin``` isn't linked on the homepage doesn't mean it's safe. If it's on the server, a fuzzer will find it.
 
 ---
 
@@ -105,12 +105,12 @@ wget https://raw.githubusercontent.com/danielmiessler/SecLists/master/Discovery/
 ---
 
 ### b) Fix: 010-staff-only
-- I opened staff-only.py using micro and found the line where the search query was built.
+- I opened ```staff-only.py``` using micro and found the line where the search query was built.
   <img width="1003" height="795" alt="Screenshot 2026-01-24 at 11 19 59 PM" src="https://github.com/user-attachments/assets/1e2a4810-6060-49f3-baf5-a7d4ab87ee01" />
 
--  The biggest problem is on line 18. I saw that the code uses + pin + to glue the user's input directly into the SQL string. This is exactly what allowed me to break out of the query using a single quote.
--  The code takes the pin from the form and just converts it to a string (str()). It doesn't check for special characters like --, OR, or ;, so it basically trusts whatever the user types.
--  On line 22, the code calls ```db.session.commit()``` after a ```SELECT``` statement. While not a security hole, it's a performance mistake.
+-  The biggest problem is on line 22. I saw that the code uses ``+ pin +`` to glue the user's input directly into the SQL string. This is exactly what allowed me to break out of the query using a single quote.
+-  The code takes the pin from the form and just converts it to a string ``(str())``. It doesn't check for special characters like --, OR, or ;, so it basically trusts whatever the user types.
+-  On line 26, the code calls ```db.session.commit()``` after a ```SELECT``` statement. While not a security hole, it's a performance mistake.
 
 Fix
 -  I removed the ```+ pin +``` part of the SQL string. Instead of putting the data directly in the string, I put a colon placeholder ```(:pin)```.
@@ -134,11 +134,11 @@ res = db.session.execute(text(sql), {"pin": pin})
 - Started by installing ```dirfuzt-1``` on the terminal
 <img width="1020" height="617" alt="Screenshot 2026-01-25 at 12 03 49 AM" src="https://github.com/user-attachments/assets/4a928e27-87dd-4321-9a18-f154ed0f3e6c" />
 
-- Then I ran ``ffuf`` and noticed that most size were 154 bytes.
+- Then I ran ``ffuf`` and noticed that most sizes were 154 bytes.
   
 <img width="1134" height="618" alt="Screenshot 2026-01-25 at 12 05 28 AM" src="https://github.com/user-attachments/assets/3b5001cf-9efe-44f5-b3ef-95deb9d172eb" />
 
-- THerefore I have decided to filter by that
+- Therefore I have decided to filter by that running:
 
 ```
 $ ./ffuf -w common.txt -u http://127.0.0.2:8000/FUZZ -fs 154
