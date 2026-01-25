@@ -95,8 +95,8 @@ wget https://raw.githubusercontent.com/danielmiessler/SecLists/master/Discovery/
   
   <img width="711" height="391" alt="Screenshot 2026-01-24 at 11 10 13 PM" src="https://github.com/user-attachments/assets/3d2c7286-3def-48ab-8eb8-caf83c6fd48a" />
 
-- To find the admin password, we could modify this injection to give us something similar to a ```SUPERADMIN```
-- hence in the same way we inject ``` OR password LIKE '%SUPERADMIN%'-- ```
+- To find the admin password, we could use the hint to modify this injection to give us something similar to a ```OFFSET 2```
+- hence in the same way we inject ``` SELECT password FROM pins WHERE pin='123 ' OR 1=1 LIMIT 1 OFFSET 2 --';```
   
   <img width="1477" height="396" alt="Screenshot 2026-01-24 at 11 15 05 PM" src="https://github.com/user-attachments/assets/12222935-1b01-4ce1-9e19-aabb3500a223" />
 
