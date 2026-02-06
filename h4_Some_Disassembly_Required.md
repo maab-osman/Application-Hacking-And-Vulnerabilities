@@ -60,7 +60,6 @@ echo "Script completed."
 * **Program Operation:** * [Briefly explain: e.g., The program takes string input, compares it against the hardcoded string "piilos-AnAnAs" using a loop, and prints the flag if they match.]
 * **Solution:** The password found in the decompiled logic is `piilos-AnAnAs`.
 
-> [Insert Screenshot: Ghidra Decompiler window showing the 'main' function with renamed variables]
 
 ---
 
@@ -74,7 +73,6 @@ echo "Script completed."
     * Input "wrong_password": [Expected: Access Granted]
     * Input "sala-hakkeri-321": [Expected: Access Denied]
 
-> [Insert Screenshot: Before/After of the Assembly instruction in Ghidra]
 
 ---
 
