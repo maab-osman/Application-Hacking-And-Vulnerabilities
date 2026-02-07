@@ -51,14 +51,23 @@ echo "Script completed."
 ---
 
 ## b) rever-C: Reverse Engineering `packd`
-* **Ghidra Analysis:**
-    * Imported the `packd` binary (unpacked version from previous task).
-    * Located the `main` function in the Symbol Tree.
-* **Descriptive Variable Names:**
-    * `local_x` renamed to `input_buffer`.
-    * `local_y` renamed to `stored_password_hash` (or relevant logic).
-* **Program Operation:** * [Briefly explain: e.g., The program takes string input, compares it against the hardcoded string "piilos-AnAnAs" using a loop, and prints the flag if they match.]
-* **Solution:** The password found in the decompiled logic is `piilos-AnAnAs`.
+
+* I first imported the `packd` binary, the unpacked version from the last homework into Ghidra to perform static analysis.
+  <img width="790" height="280" alt="Screenshot 2026-02-07 at 7 59 04 PM" src="https://github.com/user-attachments/assets/0d539210-b225-4bd4-9def-5598de7e78d1" />
+  
+* One of the first things I did was to do an auto analysis on the file to Ghidra to map function boundaries and generate initial decompiler output.
+* Then I on moved to select the defined strings from the Window menu, this is becasuse it  helps identify where the program interacts with the user and reveals hardcoded sensitive data.
+* I found the prompt string: "What's the password?" which is refrenced to the main function.
+  <img width="797" height="476" alt="Screenshot 2026-02-07 at 8 01 10 PM" src="https://github.com/user-attachments/assets/9897ffbe-3612-4437-86b5-0651de17d46e" />
+  <img width="873" height="206" alt="Screenshot 2026-02-07 at 8 03 03 PM" src="https://github.com/user-attachments/assets/935f4607-5ac0-4885-b39b-b5f2dbcbaeb3" />
+
+* By refrencing the XREFs, I was able to locate the `main` function and open it the decompiler to review the code.
+* Reviewing thw code, `local_28` was renamed to `user_input_buffer` and iVar1 to `comparison_result`
+* As we can see, The program uses scanf to read a string from the user and stores it in local_28
+    <img width="853" height="399" alt="Screenshot 2026-02-07 at 8 06 04 PM" src="https://github.com/user-attachments/assets/e31baa5f-1c77-42f4-839e-d26c9224908c" />
+* It then utilizes the `strcmp` function to compare the user's input against the hardcoded string "piilos-AnAnAs".
+* If strcmp returns 0, the program executes the success branch to print the flag.
+* So the required password in this scenario is identified through decompilation is `piilos-AnAnAs`, resulting in the flag.
 
 
 ---
