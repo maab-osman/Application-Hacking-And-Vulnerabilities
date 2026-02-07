@@ -73,14 +73,41 @@ echo "Script completed."
 ---
 
 ## c) If Backwards: Modifying `passtr` Binary
-* **Objective:** Patch the binary so it accepts *wrong* passwords and rejects the *correct* one.
-* **Method:**
-    1.  Opened `passtr` in Ghidra.
-    2.  Located the comparison logic (e.g., a `JZ` (Jump if Zero) or `JNZ` instruction).
-    3.  **The Patch:** Used the "Patch Instruction" feature to flip the logic (e.g., changing `JZ` to `JNZ`).
-* **Testing:**
-    * Input "wrong_password": [Expected: Access Granted]
-    * Input "sala-hakkeri-321": [Expected: Access Denied]
+* Similar to the previous task, The `passtr` program was imported and analyzed using Ghidra.
+
+<img width="658" height="327" alt="Screenshot 2026-02-07 at 8 53 41 PM" src="https://github.com/user-attachments/assets/7ebc1008-0028-44e4-8449-314d3dcd551c" />
+
+* Similar to the previous task, The `passtr` program was imported and analyzed using Ghidra.
+* Again looking at the defined strings, we follow The `What's the password` which navigates us to the `main` function.
+* In the main function decompile window as seen below, A local_c is set to 1 only if the XOR-decryption loop matches the stored password.
+<img width="575" height="381" alt="Screenshot 2026-02-07 at 9 25 20 PM" src="https://github.com/user-attachments/assets/6d07f95f-a4dd-4b62-a386-da8ab05c7dd1" />
+
+* To modify it, we need to identify the jump instructions in the binary. The first one found is `0x001011f6: JZ` which triggers a failure if the password flag is 0.
+* I then modified JZ to JNZ which causes the jump to fail when the password is right.
+<img width="778" height="180" alt="Screenshot 2026-02-07 at 9 03 13 PM" src="https://github.com/user-attachments/assets/efd7f8ac-8afa-4188-a1e2-8666ab6b47b4" />
+* I exported the file into its original format. Then ran the program again on my terminal but to no avail. This did not work.
+
+<img width="667" height="328" alt="Screenshot 2026-02-07 at 8 54 23 PM" src="https://github.com/user-attachments/assets/55120059-2a6e-4924-ba2e-15b6e752b18f"/>
+
+* Working my way back to the main function decompiler, I noticed there is also, a `strlen` call verifying the input is exactly 16 characters (0x10).
+
+<img width="581" height="126" alt="Screenshot 2026-02-07 at 9 44 00 PM" src="https://github.com/user-attachments/assets/8460c74a-3256-4c33-bca6-6522d59a5127" />
+
+* Going back to the code, we can identify a second jump at `0x00101208: JNZ`, which triggers a failure if the length is not 16.
+<img width="778" height="180" alt="Screenshot 2026-02-07 at 9 03 13 PM" src="https://github.com/user-attachments/assets/efd7f8ac-8afa-4188-a1e2-8666ab6b47b4" />
+
+
+* I then patched the lenght check JNZ to JZ which causes the prohram to jump Failure only if the length is exactly 16.
+  
+* Exporting the program again and running it, we type in the correct password from last week's excercise: `sala-hakkeri-321`. We get the results we want, denial as seen below.
+  
+ <img width="667" height="328" alt="Screenshot 2026-02-07 at 8 54 23 PM" src="https://github.com/user-attachments/assets/55120059-2a6e-4924-ba2e-15b6e752b18f"/>
+ 
+<img width="641" height="199" alt="Screenshot 2026-02-07 at 10 04 10 PM" src="https://github.com/user-attachments/assets/b65c0db0-8ba6-44a2-a66f-2df9d53f3ef7" />
+ 
+* On the other hand, the wrong passwords give us  a successful outcome solving this tasks objective.
+
+ <img width="666" height="222" alt="Screenshot 2026-02-07 at 8 59 23 PM" src="https://github.com/user-attachments/assets/8cfa5910-0667-4d2f-b811-419dfce97dbe" />
 
 
 ---
@@ -111,7 +138,8 @@ echo "Script completed."
     * `iVar1` -> `comparison_result`
 * **Program Operation:** [Explain: e.g., This binary checks if the user provided an argument and compares it against a calculated value.]
 * **Solution:** The password is: `[Insert Password Here]`
-
+strcmp function in c
+strlen
 ---
 
 ## Sources
