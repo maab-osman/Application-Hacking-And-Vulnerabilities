@@ -113,12 +113,25 @@ echo "Script completed."
 ---
 
 ## d) Nora CrackMe: Preparation
-* **Setup:** Cloned the repository and compiled binaries using `make`.
+* **Setup:*Cloned the repository and compiled binaries using `make`.
+<img width="779" height="350" alt="Screenshot 2026-02-08 at 9 14 42 AM" src="https://github.com/user-attachments/assets/8216a25f-fe7e-4fee-9a4b-eb3bd8574a7c" />
+
+  
 * **Approach:** Used Ghidra for static analysis of the binaries to find password logic without viewing the `.c` source files.
 
 ---
 
 ## e) Nora crackme01
+<img width="766" height="352" alt="Screenshot 2026-02-08 at 9 15 08 AM" src="https://github.com/user-attachments/assets/e3c8ce9a-6566-473c-bb4c-933fe34de65a" />
+<img width="783" height="66" alt="Screenshot 2026-02-08 at 9 15 27 AM" src="https://github.com/user-attachments/assets/75d846d5-ea49-42a4-83de-332928055655" />
+
+<img width="601" height="207" alt="Screenshot 2026-02-08 at 9 17 36 AM" src="https://github.com/user-attachments/assets/f67043a0-3dbd-43e3-83fe-43e2f6efdd43" />
+<img width="472" height="401" alt="Screenshot 2026-02-08 at 9 18 06 AM" src="https://github.com/user-attachments/assets/1c8ad59e-db10-4caa-bc6f-2c23b5c43751" />
+<img width="843" height="145" alt="Screenshot 2026-02-08 at 9 19 02 AM" src="https://github.com/user-attachments/assets/8a3b1c57-1262-40b9-b2d6-4f5caca7cbba" />
+
+
+
+
 * **Analysis:** Viewed the binary in Ghidra.
 * **Logic:** [Explain: e.g., Simple string comparison using strcmp.]
 * **Solution:** The password is: `[Insert Password Here]`
@@ -126,13 +139,29 @@ echo "Script completed."
 ---
 
 ## e) Nora crackme01e
+
+<img width="821" height="143" alt="Screenshot 2026-02-08 at 9 19 32 AM" src="https://github.com/user-attachments/assets/56a75e28-643c-4bd5-a4da-8e50655f5c2c" />
+<img width="522" height="437" alt="Screenshot 2026-02-08 at 9 27 43 AM" src="https://github.com/user-attachments/assets/b2efd677-4300-4106-880b-47a4dad0428b" />
+
+
+<img width="834" height="76" alt="Screenshot 2026-02-08 at 9 21 00 AM" src="https://github.com/user-attachments/assets/a231207d-d027-4355-b8b3-05412510d0d7" />
+
 * **Analysis:** [Explain any difference from 01, e.g., environmental variables or hidden logic.]
 * **Solution:** The password is: `[Insert Password Here]`
 
 ---
 
 ## f) Nora crackme02
-* **Variable Renaming:**
+
+* **Variable
+<img width="548" height="453" alt="Screenshot 2026-02-08 at 9 20 10 AM" src="https://github.com/user-attachments/assets/22999135-189e-441d-b497-c50539059ce3" />
+<img width="527" height="444" alt="Screenshot 2026-02-08 at 9 21 38 AM" src="https://github.com/user-attachments/assets/ed12ad78-3c3e-4f2b-a53e-de2f05cc8f72" />
+
+
+ <img width="817" height="103" alt="Screenshot 2026-02-08 at 9 27 12 AM" src="https://github.com/user-attachments/assets/98812f08-f265-45f2-90e6-0f639e9f7175" />
+
+
+Renaming:**
     * `param_1` -> `argc`
     * `param_2` -> `argv`
     * `iVar1` -> `comparison_result`
