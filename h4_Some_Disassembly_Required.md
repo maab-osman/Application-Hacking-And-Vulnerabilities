@@ -85,7 +85,7 @@ echo "Script completed."
 * To modify it, we need to identify the jump instructions in the binary. The first one found is `0x001011f6: JZ` which triggers a failure if the password flag is 0.
 * I then modified JZ to JNZ which causes the jump to fail when the password is right.
 <img width="778" height="180" alt="Screenshot 2026-02-07 at 9 03 13 PM" src="https://github.com/user-attachments/assets/efd7f8ac-8afa-4188-a1e2-8666ab6b47b4" />
-* I exported the file into its original format. Then ran the program again on my terminal but to no avail. This did not work.
+* I exported the file into its original format. Then ran the program again on my terminal but to no avail.
 
 <img width="667" height="328" alt="Screenshot 2026-02-07 at 8 54 23 PM" src="https://github.com/user-attachments/assets/55120059-2a6e-4924-ba2e-15b6e752b18f"/>
 
@@ -130,6 +130,7 @@ echo "Script completed."
 * With this, I searched through my Defined strings and navigated the string `Need exactly one argument` which refernced to the `main` function.
 
 <img width="601" height="207" alt="Screenshot 2026-02-08 at 9 17 36 AM" src="https://github.com/user-attachments/assets/f67043a0-3dbd-43e3-83fe-43e2f6efdd43" />
+
 * As seen below, The main function decompiler  had a straightforward comparision (strncmp) to the string `password1`
   
 <img width="472" height="401" alt="Screenshot 2026-02-08 at 9 18 06 AM" src="https://github.com/user-attachments/assets/1c8ad59e-db10-4caa-bc6f-2c23b5c43751" />
@@ -171,11 +172,12 @@ echo "Script completed."
     * lVar4 to `index` which is basically an iterative loop counter
 * Down below we can see the updated decompiled version.
 <img width="527" height="444" alt="Screenshot 2026-02-08 at 9 21 38 AM" src="https://github.com/user-attachments/assets/ed12ad78-3c3e-4f2b-a53e-de2f05cc8f72" />
-* Unlike previous challenges, this binary employs ASCII arithmetic.
-* The program iterates through a reference string `password1` and subtracts 1 from the ASCII decimal value of each character to determine the required input.
-* To optimize the analysis and ensure accuracy, I utilized an AI assistant to perform the batch ASCII transformations.
-* But I realized that the derived password or`rvnqc0 contains a backtick, which is a shell command-substitution character.
-* Using single back slash during execution, it successfully bypassed the check as seen below.
+
+- Unlike previous challenges, this binary employs ASCII arithmetic.
+- The program iterates through a reference string `password1` and subtracts 1 from the ASCII decimal value of each character to determine the required input.
+- To optimize the analysis and ensure accuracy, I utilized an AI assistant to perform the batch ASCII transformations.
+- But I realized that the derived password or`rvnqc0 contains a backtick, which is a shell command-substitution character.
+- Using single back slash during execution, it successfully bypassed the check as seen below.
  <img width="817" height="103" alt="Screenshot 2026-02-08 at 9 27 12 AM" src="https://github.com/user-attachments/assets/98812f08-f265-45f2-90e6-0f639e9f7175" />
 
 
