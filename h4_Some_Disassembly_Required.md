@@ -113,64 +113,92 @@ echo "Script completed."
 ---
 
 ## d) Nora CrackMe: Preparation
-* **Setup:*Cloned the repository and compiled binaries using `make`.
-<img width="779" height="350" alt="Screenshot 2026-02-08 at 9 14 42 AM" src="https://github.com/user-attachments/assets/8216a25f-fe7e-4fee-9a4b-eb3bd8574a7c" />
-
+* I extracted the `crackmes-main.zip` archive and navigated to the project directory via the terminal.
+* Then I utilized the `make` command as instructed in the `REDAME` to invoke the provided `Makefile`.
+* This process compiled the C source code into ELF binaries as seen below, creating the "target" files for the upcoming exercises.
   
-* **Approach:** Used Ghidra for static analysis of the binaries to find password logic without viewing the `.c` source files.
+<img width="779" height="350" alt="Screenshot 2026-02-08 at 9 14 42 AM" src="https://github.com/user-attachments/assets/8216a25f-fe7e-4fee-9a4b-eb3bd8574a7c" />
 
 ---
 
 ## e) Nora crackme01
+* I began by importing the the file into a new project and performing a static analysis on the ELF binary using Ghidra.
 <img width="766" height="352" alt="Screenshot 2026-02-08 at 9 15 08 AM" src="https://github.com/user-attachments/assets/e3c8ce9a-6566-473c-bb4c-933fe34de65a" />
+* First things first, I ran the program on the terminal. It is expecting a single argument.
+  
 <img width="783" height="66" alt="Screenshot 2026-02-08 at 9 15 27 AM" src="https://github.com/user-attachments/assets/75d846d5-ea49-42a4-83de-332928055655" />
+* With this, I searched through my Defined strings and navigated the string `Need exactly one argument` which refernced to the `main` function.
 
 <img width="601" height="207" alt="Screenshot 2026-02-08 at 9 17 36 AM" src="https://github.com/user-attachments/assets/f67043a0-3dbd-43e3-83fe-43e2f6efdd43" />
+* As seen below, The main function decompiler  had a straightforward comparision (strncmp) to the string `password1`
+  
 <img width="472" height="401" alt="Screenshot 2026-02-08 at 9 18 06 AM" src="https://github.com/user-attachments/assets/1c8ad59e-db10-4caa-bc6f-2c23b5c43751" />
+
+* Back in the terminal, I input `password1` which then works successfully!
+
 <img width="843" height="145" alt="Screenshot 2026-02-08 at 9 19 02 AM" src="https://github.com/user-attachments/assets/8a3b1c57-1262-40b9-b2d6-4f5caca7cbba" />
 
-
-
-
-* **Analysis:** Viewed the binary in Ghidra.
-* **Logic:** [Explain: e.g., Simple string comparison using strcmp.]
-* **Solution:** The password is: `[Insert Password Here]`
 
 ---
 
 ## e) Nora crackme01e
 
+* I started by running the program, seems to be similar to the previous one. needing one argument.
 <img width="821" height="143" alt="Screenshot 2026-02-08 at 9 19 32 AM" src="https://github.com/user-attachments/assets/56a75e28-643c-4bd5-a4da-8e50655f5c2c" />
+* Analysing the file similarly, I traced it directly to the main function as seen below.
 <img width="522" height="437" alt="Screenshot 2026-02-08 at 9 27 43 AM" src="https://github.com/user-attachments/assets/b2efd677-4300-4106-880b-47a4dad0428b" />
 
+* In this code, we see the same comparision logic, which compares directly to `slm!paas.k`.
+* But, When I tried running it first it did not work realizing to containg the `!` which is interpreted as a history expansion operator causing the input to be modified before reaching the program.
+* Trying it again with single quotes `''`, the shell expansion was supressed allowing for the literal string to be passed. It works as seen below.
 
 <img width="834" height="76" alt="Screenshot 2026-02-08 at 9 21 00 AM" src="https://github.com/user-attachments/assets/a231207d-d027-4355-b8b3-05412510d0d7" />
 
-* **Analysis:** [Explain any difference from 01, e.g., environmental variables or hidden logic.]
-* **Solution:** The password is: `[Insert Password Here]`
 
 ---
 
-## f) Nora crackme02
+## f) Nora crackme01e
 
-* **Variable
+* Following the order again from the previous excercise, I jump straight to the main function.
+* I read through it and tried to undersyand the main intent.
+
 <img width="548" height="453" alt="Screenshot 2026-02-08 at 9 20 10 AM" src="https://github.com/user-attachments/assets/22999135-189e-441d-b497-c50539059ce3" />
+
+* Following the instructions I renamed
+    * pparam_1 to `argc` which is an argument for count check
+    * param_2 to `argv` which accesses user input at argv[1]
+    * cVar1 / cVar2 to `input_char`
+    * lVar4 to `index` which is basically an iterative loop counter
+* Down below we can see the updated decompiled version.
 <img width="527" height="444" alt="Screenshot 2026-02-08 at 9 21 38 AM" src="https://github.com/user-attachments/assets/ed12ad78-3c3e-4f2b-a53e-de2f05cc8f72" />
-
-
+* Unlike previous challenges, this binary employs ASCII arithmetic.
+* The program iterates through a reference string `password1` and subtracts 1 from the ASCII decimal value of each character to determine the required input.
+* To optimize the analysis and ensure accuracy, I utilized an AI assistant to perform the batch ASCII transformations.
+* But I realized that the derived password or`rvnqc0 contains a backtick, which is a shell command-substitution character.
+* Using single back slash during execution, it successfully bypassed the check as seen below.
  <img width="817" height="103" alt="Screenshot 2026-02-08 at 9 27 12 AM" src="https://github.com/user-attachments/assets/98812f08-f265-45f2-90e6-0f639e9f7175" />
 
 
-Renaming:**
-    * `param_1` -> `argc`
-    * `param_2` -> `argv`
-    * `iVar1` -> `comparison_result`
-* **Program Operation:** [Explain: e.g., This binary checks if the user provided an argument and compares it against a calculated value.]
-* **Solution:** The password is: `[Insert Password Here]`
-strcmp function in c
-strlen
 ---
 
 ## Sources
-* Hammond, J. (2022). *Ghidra for Reverse Engineering*. Available at: https://youtu.be/fTGTnrgjuGA.
-* Tindall, S. (2023). *NoraCodes / crackmes*. Available at: https://github.com/NoraCodes/crackmes.
+
+Tools
+- National Security Agency. (2023). Ghidra Software Reverse Engineering Framework. [Software]. Available at: https://ghidra-sre.org/
+- Tindall, S. (2023). NoraCodes / crackmes. [Source Code]. Available at: https://github.com/NoraCodes/crackmes.
+- The Gradle Foundation. (2024). Gradle Build Tool Documentation (v9.3.1). Available at: https://docs.gradle.org
+
+Instructional Media
+
+- Hammond, J. (2022). Ghidra for Reverse Engineering: Introduction and Workflow. [Video]. YouTube. Available at: https://youtu.be/fTGTnrgjuGA.
+- LiveOverflow. (2020). Software Security and Binary Exploitation Series. [Video]. Available at: https://liveoverflow.com/
+
+Technical Standards & Documentation
+
+- American National Standards Institute (ANSI). X3.4-1986: Coded Character Sets - 7-Bit American Standard Code for Information Interchange (ASCII).
+- Oracle Corporation. (2023). Bash Reference Manual: Shell Expansions and Quoting. Available at: https://www.gnu.org/software/bash/manual/
+- Tool Interface Standard (TIS) Committee. (1995). Executable and Linking Format (ELF) Specification v1.2.
+
+Research Assistance
+
+- OpenAI. (2024). ChatGPT (GPT-4o model). [Large Language Model]. Used for iterative ASCII transformation calculations and shell script debugging.
