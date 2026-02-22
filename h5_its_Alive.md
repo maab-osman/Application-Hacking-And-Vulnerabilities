@@ -59,7 +59,7 @@ However, binwalk could not detect a filesystem as seen below.
 This made me realize the firmware was encrypted which was mentioned in the article earlier (Margaritelli, 2025).
 
 
-## c) Installing tp‑link‑decrypt tool
+## Installing tp‑link‑decrypt tool
 
 Following the article, I downloaded the tp‑link‑decrypt tool from GitHub in order to decrypt the firmware:
 
@@ -185,8 +185,66 @@ After these changes seen below, the program was recompiled using `make`
 It now runs to completion without crashing and displays the correct flag.
 <img width="772" height="69" alt="Screenshot 2026-02-22 at 3 40 00 AM" src="https://github.com/user-attachments/assets/5cacb50a-e846-4c45-a06e-865e9b78cf3f" />
 
+## c) Lab 2 - passtr
+
+After unziping and excecuting the script `./passtr`, The program prompts the user for a password and terminates if the input is incorrect.
+
+<img width="601" height="99" alt="Screenshot 2026-02-22 at 3 51 57 AM" src="https://github.com/user-attachments/assets/6973dabb-e33a-44cb-a4ae-1f58dd8410fc" />
+
+Instead of brute-forcing the input, I inspected the source code using the `cat` command, we see that the password is clearly hardcoded inside a condition.
+
+<img width="1198" height="441" alt="Screenshot 2026-02-22 at 3 53 20 AM" src="https://github.com/user-attachments/assets/a6ea85ab-91dd-4fd7-bd17-d46cde89dafb" />
+
+- The program uses `strcmp` to check the user's input against a fixed string.
+- The password is explicitly hardcoded as: `sala-hakkeri-321`.
+
+I re-ran the program and entered the discovered password. The `if` condition evaluated to true, granting access to the flag.
+<img width="987" height="116" alt="Screenshot 2026-02-22 at 3 54 39 AM" src="https://github.com/user-attachments/assets/53440611-955d-4e4c-b451-003d7a94aed7" />
+
+In conclusion, By simply reading the source code, the security mechanism was bypassed without the need for complex debugging or reverse engineering.
+
+## d) Lab 3 - Noracrackmes
+
+### crackme03
+
+As the previous crackmes, you are expected to input one right argument.
+I began by using the `cat` command to read the source code (crackme03.c). Unlike the previous lab where the password was a simple string, this program calculates the password by adding a mask to a base string
+  - Base String (correct): "lAmBdA"
+  - Mask Values (mask): {2, 3, 2, 3, 5}
+
+<img width="945" height="824" alt="Screenshot 2026-02-22 at 4 16 05 AM" src="https://github.com/user-attachments/assets/b1405a0d-f002-4a90-a205-41e02715afab" />
+
+The program basically compares the user input to `correct[i] + mask[i]`. By manually adding these values together using the ASCII table, the real password is revealed to be 'nDoEiA' as seen in the source code
+
+<img width="815" height="143" alt="Screenshot 2026-02-22 at 4 15 42 AM" src="https://github.com/user-attachments/assets/a58e6d94-7b27-4f62-a04c-da061f6b6993" />
+
+Inputting this string successfully clears the challenge.
+
+<img width="876" height="61" alt="Screenshot 2026-02-22 at 4 16 27 AM" src="https://github.com/user-attachments/assets/24c5cc27-76a5-4617-ad4a-49c351c6347a" />
+
+### crackme04
+
+Unlike previous challenges, this program accepts any string that meets specific mathematical criteria rather than a single hardcoded word.
+
+I inspected the source code using the `cat` command to understand the validation logic.
+
+<img width="987" height="905" alt="Screenshot 2026-02-22 at 4 29 19 AM" src="https://github.com/user-attachments/assets/36837632-342e-4ffe-98df-8a459895d652" />
+
+  - The input must be exactly 16 characters long.
+  - The sum of the ASCII values of all 16 characters must equal a specific total.
+
+I noticed a discrepancy in the code comments. One comment mentioned a sum of 1652, but the actual #define and logic used a different calculation:
+  - 16 x 110 + 2 = 1762
+  - Which tells us that the program requires a total ASCII sum of 1762.
+    
+To solve this, I needed a string where the characters average out to the letter 'n' (ASCII value 110), with two characters being slightly higher to reach the +2 requirement.
+With the assitance of AI for accuraccy, the solution was concluded to be `nononnnnnnnnnnnn`
+  - This string consists of 14 'n's (110) and 2 'o's (111)
+  - (14 x 110) + (2 x 111) = 1540 + 222 = 1762.
+
+By providing the string `nononnnnnnnnnnnn`, I satisfied both the length and sum requirements. The program confirmed the input was correct.
 
 
-
+<img width="876" height="61" alt="Screenshot 2026-02-22 at 4 29 41 AM" src="https://github.com/user-attachments/assets/c61dc356-a284-4847-95cc-cbbca6dec758" />
 
 
