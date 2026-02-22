@@ -120,12 +120,15 @@ Now to analyze, I finally ran:
 binwalk -e firmware.bin.dec
 ```
 This time, it showed useful information as seen below:
+
 <img width="1226" height="550" alt="Screenshot 2026-02-22 at 12 44 48 AM" src="https://github.com/user-attachments/assets/bcb19c96-9476-4b67-acaa-3ccee3bd49cf" />
 
 It revealed things like the linux kernel, SquashFS filesystem and the bootloader.
 
-Then<img width="1195" height="509" alt="Screenshot 2026-02-22 at 12 48 44 AM" src="https://github.com/user-attachments/assets/81bc3024-030b-4a33-ab1f-a98c44262ee3" />
- the contents where extarcted by:
+Then the contents where extarcted by:
+
+<img width="1195" height="509" alt="Screenshot 2026-02-22 at 12 48 44 AM" src="https://github.com/user-attachments/assets/81bc3024-030b-4a33-ab1f-a98c44262ee3" />
+ 
 
 ```
 binwalk -e firmware_decrypted.bin
@@ -145,13 +148,21 @@ This resulted in:
 
 <img width="1329" height="591" alt="Screenshot 2026-02-22 at 1 13 57 AM" src="https://github.com/user-attachments/assets/863ff196-26a9-4130-bf5b-1cc5982e1485" />
 
-Analyzing this with the assitance of AI, we found:
+Analyzing this with the assitance we found:
   - HTTP authentication routines
   - MQTT credentials
   - RTSP password checks
   - ONVIF password handling
 
-Thats when things got interesting so I decided to load `bin/main` into Ghidra
+Thats when things got interesting so I decided to load `bin/main` into Ghidra. From my analysis, I discovered several important things.
+
+### Key Findings:
+
+- The binary contains format strings like `password is %s` , suggesting that sensitive credentials may be logged in plaintext during certain operations.
+- The device manages a multi-tier account system, including admin and third account levels. It utilizes `HMAC` for password hashing and adheres to `WS-UsernameToken` standards.
+- The presence of `RTSP` and `ONVIF` strongly indicates this is an IoT camera system.
+
+The firmware exhibits a standard IoT design but contains significant Information Disclosure vulnerabilities. The most critical finding is the potential for plaintext password logging in the hub_auth and mqtt modules. If an attacker gains access to the device's logs, these hardcoded format strings indicate that full account compromise is highly probable.
 
 ## b) Lab1
 
@@ -246,5 +257,12 @@ By providing the string `nononnnnnnnnnnnn`, I satisfied both the length and sum 
 
 
 <img width="876" height="61" alt="Screenshot 2026-02-22 at 4 29 41 AM" src="https://github.com/user-attachments/assets/c61dc356-a284-4847-95cc-cbbca6dec758" />
+
+---
+# References
+- Kali. “Binwalk | Kali Linux Tools.” Kali Linux,2026 www.kali.org/tools/binwalk/.
+- Margaritelli, Simone. “TP-Link Tapo C200: Hardcoded Keys, Buffer Overflows and Privacy in the Era of AI Assisted Reverse Engineering.” Evilsocket, 17 Dec. 2025, www.evilsocket.net/2025/12/18/TP-Link-Tapo-C200-Hardcoded-Keys-Buffer-Overflows-and-Privacy-in-the-Era-of-AI-Assisted-Reverse-Engineering/. Accessed 21 Feb. 2026.
+- TP-Link Cloud Public Firmware Repository. AWS S3 bucket: s3://download.tplinkcloud.com/ (Accessed via AWS CLI with --no-sign-request).
+- OpenAI. (2026). ChatGPT (GPT-5) [Large language model]. Retrieved February 22, 2026, from https://chat.openai.com
 
 
