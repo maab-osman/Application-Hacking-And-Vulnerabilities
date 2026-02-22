@@ -152,3 +152,41 @@ Analyzing this with the assitance of AI, we found:
   - ONVIF password handling
 
 Thats when things got interesting so I decided to load `bin/main` into Ghidra
+
+## b) Lab1
+
+After unziping the Lab1 file, I began by compiling the source code using the make command, which utilized the `-g` flag to include debugging symbols.
+
+<img width="670" height="51" alt="Screenshot 2026-02-22 at 3 13 58 AM" src="https://github.com/user-attachments/assets/e5c127dd-2f82-4562-9d91-e618f8678765" />
+
+I then rab `gdb` which is a debugger for C, to investigate why it wasn't completing its execution.
+
+<img width="879" height="424" alt="Screenshot 2026-02-22 at 3 18 07 AM" src="https://github.com/user-attachments/assets/01ff105b-a7ec-410a-9176-e2ea78c112eb" />
+
+The program prints `Khoor/#zruog1` and then immediately triggers a Segmentation fault.
+
+GDB identified the crash at `print_scrambled (message=0x0)`. This confirmed that the program was trying to process a null pointer
+
+<img width="916" height="177" alt="Screenshot 2026-02-22 at 3 19 42 AM" src="https://github.com/user-attachments/assets/af3af538-f1b2-488d-9776-d40bf8003d1f" />
+
+To understand the state of the program before it failed, I set a breakpoint at the call for the "bad message". The first message was being handled correctly, but the second call passed a null variable `(bad_message)` to the function.
+<img width="592" height="490" alt="Screenshot 2026-02-22 at 3 22 45 AM" src="https://github.com/user-attachments/assets/79482fb3-dbd1-4e34-a5fd-5ec22814592d" />
+
+Based on the AI-assisted analysis of the crash, I modified the code to prevent the null pointer dereference.
+I removed the direct call to `print_scrambled(bad_message)` and implemented an if statement to ensure the message is not null before processing it.
+
+The logic of the program useses a +3 ASCII shift so the recovered flag is `Hello, World!`, Thefore By adjusting the value of i to 0, I recovered the intended text.
+Also, to prevent the crash I added a conditional if statement to ensure the program only attempts to print a message if the pointer is not NULL.
+
+After these changes seen below, the program was recompiled using `make`
+
+<img width="711" height="682" alt="Screenshot 2026-02-22 at 3 38 56 AM" src="https://github.com/user-attachments/assets/49c6496c-93cf-4fe5-9848-5306193c711c" />
+
+It now runs to completion without crashing and displays the correct flag.
+<img width="772" height="69" alt="Screenshot 2026-02-22 at 3 40 00 AM" src="https://github.com/user-attachments/assets/5cacb50a-e846-4c45-a06e-865e9b78cf3f" />
+
+
+
+
+
+
