@@ -154,7 +154,7 @@ Analyzing this with the assitance we found:
   - RTSP password checks
   - ONVIF password handling
 
-Thats when things got interesting so I decided to load `bin/main` into Ghidra. From my analysis, I discovered several important things.
+Thats when things got interesting so I decided to load `bin/main` into Ghidra to trace the cross-references (XREFS) of password is %s. This allowed me to see the actual function calls where the password variable was being passed to a logging function, confirming that the data was not hashed before being recorded. From my analysis, I discovered several important things.
 
 ### Key Findings:
 
@@ -162,7 +162,7 @@ Thats when things got interesting so I decided to load `bin/main` into Ghidra. F
 - The device manages a multi-tier account system, including admin and third account levels. It utilizes `HMAC` for password hashing and adheres to `WS-UsernameToken` standards.
 - The presence of `RTSP` and `ONVIF` strongly indicates this is an IoT camera system.
 
-The firmware exhibits a standard IoT design but contains significant Information Disclosure vulnerabilities. The most critical finding is the potential for plaintext password logging in the hub_auth and mqtt modules. If an attacker gains access to the device's logs, these hardcoded format strings indicate that full account compromise is highly probable.
+The firmware exhibits a standard IoT design but contains significant Information Disclosure vulnerabilities. The most critical finding is the potential for plaintext password logging in the `hub_auth` and `mqtt` modules. If an attacker gains access to the device's logs, these hardcoded format strings indicate that full account compromise is highly probable.
 
 ## b) Lab1
 
@@ -170,9 +170,11 @@ After unziping the Lab1 file, I began by compiling the source code using the mak
 
 <img width="670" height="51" alt="Screenshot 2026-02-22 at 3 13 58 AM" src="https://github.com/user-attachments/assets/e5c127dd-2f82-4562-9d91-e618f8678765" />
 
+
 I then rab `gdb` which is a debugger for C, to investigate why it wasn't completing its execution.
 
 <img width="879" height="424" alt="Screenshot 2026-02-22 at 3 18 07 AM" src="https://github.com/user-attachments/assets/01ff105b-a7ec-410a-9176-e2ea78c112eb" />
+
 
 The program prints `Khoor/#zruog1` and then immediately triggers a Segmentation fault.
 
@@ -180,7 +182,9 @@ GDB identified the crash at `print_scrambled (message=0x0)`. This confirmed that
 
 <img width="916" height="177" alt="Screenshot 2026-02-22 at 3 19 42 AM" src="https://github.com/user-attachments/assets/af3af538-f1b2-488d-9776-d40bf8003d1f" />
 
+
 To understand the state of the program before it failed, I set a breakpoint at the call for the "bad message". The first message was being handled correctly, but the second call passed a null variable `(bad_message)` to the function.
+
 <img width="592" height="490" alt="Screenshot 2026-02-22 at 3 22 45 AM" src="https://github.com/user-attachments/assets/79482fb3-dbd1-4e34-a5fd-5ec22814592d" />
 
 Based on the AI-assisted analysis of the crash, I modified the code to prevent the null pointer dereference.
@@ -194,6 +198,7 @@ After these changes seen below, the program was recompiled using `make`
 <img width="711" height="682" alt="Screenshot 2026-02-22 at 3 38 56 AM" src="https://github.com/user-attachments/assets/49c6496c-93cf-4fe5-9848-5306193c711c" />
 
 It now runs to completion without crashing and displays the correct flag.
+
 <img width="772" height="69" alt="Screenshot 2026-02-22 at 3 40 00 AM" src="https://github.com/user-attachments/assets/5cacb50a-e846-4c45-a06e-865e9b78cf3f" />
 
 ## c) Lab 2 - passtr
@@ -202,14 +207,17 @@ After unziping and excecuting the script `./passtr`, The program prompts the use
 
 <img width="601" height="99" alt="Screenshot 2026-02-22 at 3 51 57 AM" src="https://github.com/user-attachments/assets/6973dabb-e33a-44cb-a4ae-1f58dd8410fc" />
 
+
 Instead of brute-forcing the input, I inspected the source code using the `cat` command, we see that the password is clearly hardcoded inside a condition.
 
 <img width="1198" height="441" alt="Screenshot 2026-02-22 at 3 53 20 AM" src="https://github.com/user-attachments/assets/a6ea85ab-91dd-4fd7-bd17-d46cde89dafb" />
+
 
 - The program uses `strcmp` to check the user's input against a fixed string.
 - The password is explicitly hardcoded as: `sala-hakkeri-321`.
 
 I re-ran the program and entered the discovered password. The `if` condition evaluated to true, granting access to the flag.
+
 <img width="987" height="116" alt="Screenshot 2026-02-22 at 3 54 39 AM" src="https://github.com/user-attachments/assets/53440611-955d-4e4c-b451-003d7a94aed7" />
 
 In conclusion, By simply reading the source code, the security mechanism was bypassed without the need for complex debugging or reverse engineering.
@@ -224,6 +232,7 @@ I began by using the `cat` command to read the source code (crackme03.c). Unlike
   - Mask Values (mask): {2, 3, 2, 3, 5}
 
 <img width="945" height="824" alt="Screenshot 2026-02-22 at 4 16 05 AM" src="https://github.com/user-attachments/assets/b1405a0d-f002-4a90-a205-41e02715afab" />
+
 
 The program basically compares the user input to `correct[i] + mask[i]`. By manually adding these values together using the ASCII table, the real password is revealed to be 'nDoEiA' as seen in the source code
 
@@ -240,6 +249,7 @@ Unlike previous challenges, this program accepts any string that meets specific 
 I inspected the source code using the `cat` command to understand the validation logic.
 
 <img width="987" height="905" alt="Screenshot 2026-02-22 at 4 29 19 AM" src="https://github.com/user-attachments/assets/36837632-342e-4ffe-98df-8a459895d652" />
+
 
   - The input must be exactly 16 characters long.
   - The sum of the ASCII values of all 16 characters must equal a specific total.
