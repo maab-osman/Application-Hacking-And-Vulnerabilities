@@ -148,21 +148,36 @@ This resulted in:
 
 <img width="1329" height="591" alt="Screenshot 2026-02-22 at 1 13 57 AM" src="https://github.com/user-attachments/assets/863ff196-26a9-4130-bf5b-1cc5982e1485" />
 
-Analyzing this with the assitance we found:
-  - HTTP authentication routines
-  - MQTT credentials
-  - RTSP password checks
-  - ONVIF password handling
 
 Thats when things got interesting so I decided to load `bin/main` into Ghidra to trace the cross-references (XREFS) of password is %s. This allowed me to see the actual function calls where the password variable was being passed to a logging function, confirming that the data was not hashed before being recorded. From my analysis, I discovered several important things.
 
-### Key Findings:
+I began by filtering out defined strings containing `pass`
+<img width="945" height="594" alt="Screenshot 2026-02-23 at 2 15 19 AM" src="https://github.com/user-attachments/assets/bcc7d7f5-2265-4b1c-93f0-724fbd2115f5" />
 
-- The binary contains format strings like `password is %s` , suggesting that sensitive credentials may be logged in plaintext during certain operations.
-- The device manages a multi-tier account system, including admin and third account levels. It utilizes `HMAC` for password hashing and adheres to `WS-UsernameToken` standards.
-- The presence of `RTSP` and `ONVIF` strongly indicates this is an IoT camera system.
 
-The firmware exhibits a standard IoT design but contains significant Information Disclosure vulnerabilities. The most critical finding is the potential for plaintext password logging in the `hub_auth` and `mqtt` modules. If an attacker gains access to the device's logs, these hardcoded format strings indicate that full account compromise is highly probable.
+This led me to locate the "brain" of the user management system. I identified function `FUN_004b9d68`, which acts as a central registry for all administrative actions.
+  - This function registers critical commands such as `change_admin_password` and `check_user_info`.
+  - Identifying this helped me to pinpoint exactly which functions handle credential changes and authentication checks.
+    
+<img width="700" height="576" alt="Screenshot 2026-02-23 at 2 16 54 AM" src="https://github.com/user-attachments/assets/d4d3fc56-42f4-4d80-b867-1d8c0d1297fb" />
+
+Once the management engine was identified, I analyzed how it validates user levels. I discovered a hardcoded logic flaw in the authentication flow.
+  - The firmware performs a `strcmp` against the hardcoded string "Operator".
+  - If the input matches "Operator," the system uses strcpy to manually overwrite the user's privilege level to "admin".
+    
+    <img width="492" height="235" alt="Screenshot 2026-02-23 at 2 19 09 AM" src="https://github.com/user-attachments/assets/7e303dbf-b0aa-487e-a1f3-67967f487689" />
+
+Finally, I looked at the very beginning of the program's execution to see where these secrets originate.
+
+
+<img width="519" height="281" alt="Screenshot 2026-02-23 at 2 21 45 AM" src="https://github.com/user-attachments/assets/8a29d102-390e-4bbb-bc09-4adbf9abf20c" />
+
+
+  - In the `_INIT_90 function` , the firmware initializes its environment.
+  - I identified the initialization of a `factory_passwd` variable alongside default account names for "admin" and "root".
+  - This reveals the existence of hardcoded factory-default credentials that remain present in the production firmware.
+
+The investigation concluded that the Tapo C200 security model relies on hardcoded logic rather than secure cryptographic practices. By identifying the "Operator" role-elevation bypass and the plaintext logging of credentials, I have demonstrated that an attacker can gain full administrative control by exploiting these internal architectural flaws.   
 
 ## b) Lab1
 
