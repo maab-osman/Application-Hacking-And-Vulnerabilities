@@ -99,7 +99,45 @@ The main function received the "true" signal and proceeded to grant access as se
 - Rust Foundation (2024). The Rust Programming Language: Optimization and Constants. [online] Available at: https://doc.rust-lang.org/book/.
 
 ---
-## b) Lab1
+## b) Lab0
+
+- In this introductory lab, I utilized gdb to diagnose errors in a C program.
+- Upon execution, the program produced the following unexpected output:
+
+<img width="828" height="190" alt="Screenshot 2026-03-01 at 3 31 47 AM" src="https://github.com/user-attachments/assets/55f856e7-35d1-4115-a7e7-b31ff4f97c2d" />
+
+- I launched the debugger to inspect the program's state at runtime. Unlike my earlier work with `rust-lldb`, I used the standard GNU Debugger for this C-based task.
+- I compiled the program with the -g flag to include debug symbols and launched the session:
+```
+gdb ./buggy_program
+```
+
+- I set a breakpoint at the entry point and stepped through the logic:
+```
+(gdb) break main
+
+(gdb) run
+
+(gdb) next
+```
+By stepping through the execution, I isolated the bug to the following function call:
+<img width="811" height="179" alt="Screenshot 2026-03-01 at 3 34 05 AM" src="https://github.com/user-attachments/assets/efb6d779-95a4-4a48-8812-197ad8bc1bd2" />
+
+- The error was clearly commented, hinting that the array was off by one in the loop boundary condition.
+- Understanding this, I navigated to the C code file:
+
+<img width="940" height="363" alt="Screenshot 2026-03-01 at 3 35 52 AM" src="https://github.com/user-attachments/assets/76be482a-4cbc-4e75-9e47-ca52759d7632" />
+
+- Here we can see that on the final iteration, the program attempted to read arr[5], which points to a memory address immediately following the array's allocated space.
+- I corrected the loop boundary to ensure it strictly respects the array's size by changing the condition from `<=` to `<`
+- After recompiling and running the program, the invalid "Element 5" was eliminated, and the output correctly reflected the array’s intended bounds.
+
+  <img width="687" height="154" alt="Screenshot 2026-03-01 at 3 38 22 AM" src="https://github.com/user-attachments/assets/198a75e4-a094-4e0e-8bf6-318b1426af19" />
+
+---
+
+
+## c) Lab1
 
 After unziping the Lab1 file, I began by compiling the source code using the make command, which utilized the `-g` flag to include debugging symbols.
 
