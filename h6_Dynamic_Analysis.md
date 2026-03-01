@@ -78,5 +78,13 @@ The main function received the "true" signal and proceeded to grant access as se
 
 <img width="385" height="76" alt="Screenshot 2026-03-01 at 2 37 13 AM" src="https://github.com/user-attachments/assets/f4c8dc43-7185-4585-b4a7-1545b49bb31c" />
 
+## Task 4: Comparison: LLDB vs. GDB
+- Having used GDB on Linux previously, rust-lldb felt like moving to a much stricter, but more capable, environment.
+- While GDB is generally more "relaxed" with commands letting me get away with a simple list, LLDB was far more strict about syntax.
+- I initially struggled with errors like "invalid command" when I forgot to specify read or write for registers.
+- The most personal takeaway wasn't until I used l 1 and register read x1 that I saw the the constant in my local file had actually been set. LLDB sort of corrected my own misinformation about the code I was looking at.
+- While I appreciate GDB’s simplicity, LLDB’s expression command is significantly more powerful for Rust. The ability to evaluate complex expressions quickly and the native way it handles ARM64 registers makes me favor it over gdb.
+
+
 
 
