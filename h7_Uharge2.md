@@ -118,24 +118,30 @@ The Winner: b'Now that the party is jumping\n'
 The Key: I found that the character used to encrypt it was 5.
 
 ```
-best_overall_score = 0
-final_message = ""
+import os
 
-# Outer Loop: The Haystack
-for line in open("4.txt"):
-    clean_line = line.strip()
+# Assuming score_english and crack_single_byte_xor are defined above
+path = "data/4.txt"
+
+if os.path.exists(path):
+    best_overall_score = 0
+    winner_text = ""
+
+    with open(path, 'r') as f:
+        for line_no, line in enumerate(f):
+            hex_str = line.strip()
+            
+            # Use the 'Cracker' from Task 3
+            current_text, current_key = crack_single_byte_xor(hex_str)
+            current_score = score_english(current_text)
+            
+            # Keeping track of the "All-Time High Score"
+            if current_score > best_overall_score:
+                best_overall_score = current_score
+                winner_text = current_text
+                print(f"New leader on line {line_no}: {winner_text}")
     
-    # Inner Loop: The Needle Finder (Brute force 0-255)
-    for key_candidate in range(256):
-        # 1. XOR the line with the current key
-        attempt = bytes([b ^ key_candidate for b in bytes.fromhex(clean_line)])
-        
-        # 2. Score it based on English frequency (ETAOIN)
-        current_score = score_english(attempt)
-        
-        # 3. Update the "Leaderboard"
-        if current_score > best_overall_score:
-            best_overall_score = current_score
-            final_message = attempt
-            print(f"Found better match: {attempt}")
+    print(f"\n--- FINAL DISCOVERY ---\n{winner_text.decode().strip()}")
+else:
+    print("Error: 4.txt not found in the data folder!")
 ```
