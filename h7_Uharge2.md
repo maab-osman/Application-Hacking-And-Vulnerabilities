@@ -30,3 +30,12 @@ In this assignment, I explored the foundations of cryptography through the lens 
 
 ### Python Basics for Hackers (Karvinen, 2024)
 
+- While the built-in Python REPL is functional, iPython is better for development.
+- The workflow centers on writing scripts and hitting F5 to run them immediately.
+- For crypto tasks, the ability to jump between hex, bytes, and base64 using built-in methods like .fromhex() is important.
+- Python handles these operations natively on integers and byte-arrays.
+- Using assert is a professional way to verify that your code is working as expected.
+- Print Debugging for quick checks and Breakpoints for deep inspection of the program state (similar to the GDB/LLDB workflows used in previous week's lab).
+- Python’s list comprehensions allow for "loopier loops" that are both shorter and more readable. 
+
+## Task a: 1. Convert Hex to Base64
