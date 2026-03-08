@@ -55,6 +55,12 @@ In this assignment, I explored the foundations of cryptography through the lens 
   converted_binary = bytes.fromhex(theString)
   ```
 - Now that I had the data in the right format, I fed it back into the base64 tool I found earlier.
+  
+  <img width="1205" height="371" alt="Screenshot 2026-03-08 at 7 19 34 AM" src="https://github.com/user-attachments/assets/e2c05b2c-9c60-4d23-8002-4d9d9a481217" />
+
+
+<img width="1383" height="217" alt="Screenshot 2026-03-08 at 7 19 57 AM" src="https://github.com/user-attachments/assets/dc238edb-9ebc-4d95-bacb-a2ac2eca8f0e" />
+
 
   ---
 
@@ -63,4 +69,13 @@ In this assignment, I explored the foundations of cryptography through the lens 
 - Here, the goal was to take two same lenght hex strings and XOR them against each other.
 - Just like in Task A, I knew I couldn't XOR the "text" of the hex strings. I had to turn both inputs into raw bytes first using `bytes.fromhex()`
 - I tried doing `bytes1 ^ bytes2` but Python gave me another error. It turns out you can't XOR at once. You have to go through them one by one.
-- The teacher's tip was to use `enumerate()` to iterate through two sets of bytes at once
+- The teacher's tip was to use `enumerate()` to iterate through two sets of bytes at once.
+- I also used `bytearray` to collect the results of each XOR operation, as it is mutable and efficient for building binary string
+
+<img width="918" height="594" alt="Screenshot 2026-03-08 at 7 18 45 AM" src="https://github.com/user-attachments/assets/fd1318b3-4d1c-42be-9c21-fb1ed11a501d" />
+
+- After adding a `print(fixed_xor(input1, input2))` statement at the bottom of my script, I successfully verified the hex output matched the target
+
+<img width="825" height="138" alt="Screenshot 2026-03-08 at 7 19 01 AM" src="https://github.com/user-attachments/assets/9a1e766e-8f56-4a78-ae3e-3607bd24fc74" />
+
+  
