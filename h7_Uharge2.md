@@ -85,4 +85,57 @@ In this assignment, I explored the foundations of cryptography through the lens 
 - The idea here is that we have a hex string, and someone XOR'd every single character in the original message against one secret key. We don't know the key.
 - We try every single possible key, look at the 256 resulting messages, and pick the one that looks like English.
 - To knoe if its english, a scoring method can be used.
+- To start with first `score_english` function, I created a string of the most common english letters 'etaoinshrdlu'. So this function will look at every character in a decrypted message. If a character is matching the list, the score goes up by 1.
+- Then the testing `crack_single_byte_xor` function that takes the scrambled hex string and turns it into bytes.
+- Then using `range(256)` to try every single one from 0 to 255.
+- For every key we try, we go through the ciphertext and "undo" the encryption using the ^ operator.
+- Finally, we create three variables to act as a leaderboard. They only update when it finds a message that scores higher than the previous record.
+- chr(key) is used to turn the number back into a readable letter.
+<img width="1154" height="617" alt="Screenshot 2026-03-08 at 7 50 30 AM" src="https://github.com/user-attachments/assets/3a6b1ac3-e264-4ce8-9b1f-ec205146e952" />
 
+Here is the result:
+
+<img width="623" height="73" alt="Screenshot 2026-03-08 at 7 50 51 AM" src="https://github.com/user-attachments/assets/9606a5e6-4d11-4bd2-a9c3-d50961dba273" />
+
+---
+
+## Tasck d: 4. Single-byte XOR cipher
+
+- I downloaded `4.txt` and my first instinct was to just loop through it. However, I immediately ran into my first "learning moment".
+
+```
+for line in open("4.txt"):
+    data = bytes.fromhex(line)
+```
+- I realized that each line in the file ends with a hidden newline character (\n). I had to use `.strip()` to clean the data before Python could process it as hex.
+- To solve this, I had to nest my logic from Task 3 inside a new loop. So I thought to go through every line in the file and for each of those lines, try every possible 1-byte key.
+- When I ran the script, my terminal filled up with "garbage" strings that had high scores just by luck (lots of spaces or random 'e's). But then, suddenly, one line popped out that was clearly different.
+
+The Result: The script filtered through 83,712 combinations (327 lines × 256 keys) in less than a second.
+
+The Winner: b'Now that the party is jumping\n'
+
+The Key: I found that the character used to encrypt it was 5.
+
+```
+best_overall_score = 0
+final_message = ""
+
+# Outer Loop: The Haystack
+for line in open("4.txt"):
+    clean_line = line.strip()
+    
+    # Inner Loop: The Needle Finder (Brute force 0-255)
+    for key_candidate in range(256):
+        # 1. XOR the line with the current key
+        attempt = bytes([b ^ key_candidate for b in bytes.fromhex(clean_line)])
+        
+        # 2. Score it based on English frequency (ETAOIN)
+        current_score = score_english(attempt)
+        
+        # 3. Update the "Leaderboard"
+        if current_score > best_overall_score:
+            best_overall_score = current_score
+            final_message = attempt
+            print(f"Found better match: {attempt}")
+```
