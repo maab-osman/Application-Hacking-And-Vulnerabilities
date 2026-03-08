@@ -109,39 +109,20 @@ for line in open("4.txt"):
 ```
 - I realized that each line in the file ends with a hidden newline character (\n). I had to use `.strip()` to clean the data before Python could process it as hex.
 - To solve this, I had to nest my logic from Task 3 inside a new loop. So I thought to go through every line in the file and for each of those lines, try every possible 1-byte key.
-- When I ran the script, my terminal filled up with "garbage" strings that had high scores just by luck (lots of spaces or random 'e's). But then, suddenly, one line popped out that was clearly different.
 
-The Result: The script filtered through 83,712 combinations (327 lines × 256 keys) in less than a second.
+<img width="670" height="526" alt="Screenshot 2026-03-08 at 8 30 03 AM" src="https://github.com/user-attachments/assets/e50ff9bf-ac0a-4b5a-9554-ab7e07219235" />
 
-The Winner: b'Now that the party is jumping\n'
+<img width="803" height="178" alt="Screenshot 2026-03-08 at 8 29 36 AM" src="https://github.com/user-attachments/assets/cfd7960a-3c4c-4fd1-a4a9-71bd0f329de4" />
 
-The Key: I found that the character used to encrypt it was 5.
+- When I ran the script, my terminal filled up with "garbage" strings that had high scores just by luck. But then, suddenly, one line popped out that was clearly different.
 
-```
-import os
 
-# Assuming score_english and crack_single_byte_xor are defined above
-path = "data/4.txt"
 
-if os.path.exists(path):
-    best_overall_score = 0
-    winner_text = ""
 
-    with open(path, 'r') as f:
-        for line_no, line in enumerate(f):
-            hex_str = line.strip()
-            
-            # Use the 'Cracker' from Task 3
-            current_text, current_key = crack_single_byte_xor(hex_str)
-            current_score = score_english(current_text)
-            
-            # Keeping track of the "All-Time High Score"
-            if current_score > best_overall_score:
-                best_overall_score = current_score
-                winner_text = current_text
-                print(f"New leader on line {line_no}: {winner_text}")
-    
-    print(f"\n--- FINAL DISCOVERY ---\n{winner_text.decode().strip()}")
-else:
-    print("Error: 4.txt not found in the data folder!")
-```
+
+
+
+
+  
+- I found that the character used to encrypt it was 5.
+
