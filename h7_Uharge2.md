@@ -39,3 +39,28 @@ In this assignment, I explored the foundations of cryptography through the lens 
 - Python’s list comprehensions allow for "loopier loops" that are both shorter and more readable. 
 
 ## Task a: 1. Convert Hex to Base64
+- I started by opening python3 in my terminal. I knew I needed a library for Base64, so I tried import base64. To see what I could actually do with it, I typed base64. and hit Tab.
+- It gave me a few options: base64.b64decode, base64.b64encode, etc.
+- Since I wanted to encode the data into Base64, b64encode seemed like the obvious choice.
+- I first tried to just throw the hex string directly into the function:
+  
+  ```
+  base64.b64encode("49276d206b696c6c696e...")
+  ```
+- But I got a TypeError. I learned that b64encode doesn't want a string, it wants bytes.
+- I had to figure out how to turn those hex characters into actual binary data using `bytes.fromhex()`.
+
+  ```
+  theString = "49276d206b696c6c696e6720796f757220627261696e206c696b65206120706f69736f6e6f7573206d757368726f6f6d"
+  converted_binary = bytes.fromhex(theString)
+  ```
+- Now that I had the data in the right format, I fed it back into the base64 tool I found earlier.
+
+  ---
+
+## Task b: 2. Fixed XOR
+
+- Here, the goal was to take two same lenght hex strings and XOR them against each other.
+- Just like in Task A, I knew I couldn't XOR the "text" of the hex strings. I had to turn both inputs into raw bytes first using `bytes.fromhex()`
+- I tried doing `bytes1 ^ bytes2` but Python gave me another error. It turns out you can't XOR at once. You have to go through them one by one.
+- The teacher's tip was to use `enumerate()` to iterate through two sets of bytes at once
