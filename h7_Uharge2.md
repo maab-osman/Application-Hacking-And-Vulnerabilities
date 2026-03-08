@@ -115,14 +115,15 @@ for line in open("4.txt"):
 <img width="803" height="178" alt="Screenshot 2026-03-08 at 8 29 36 AM" src="https://github.com/user-attachments/assets/cfd7960a-3c4c-4fd1-a4a9-71bd0f329de4" />
 
 - When I ran the script, my terminal filled up with "garbage" strings that had high scores just by luck. But then, suddenly, one line popped out that was clearly different.
-
-
-
-
-
-
-
-
   
 - I found that the character used to encrypt it was 5.
+
+---
+### References
+
+
+- Karvinen, T. (2026). Python Basics for Hackers. [online] TeroKarvinen.com. Available at: https://terokarvinen.com/python-basics-for-hackers/ [Accessed 7 Mar. 2026].
+- Karvinen, T. (2026). Getting Started with Cryptopals using Python. [online] TeroKarvinen.com. Available at: https://terokarvinen.com/getting-started-with-cryptopals-using-python/ [Accessed 7 Mar. 2026].
+- Matasano Security (2026). The Cryptopals Crypto Challenges: Set 1. [online] Cryptopals.com. Available at: https://cryptopals.com/sets/1 [Accessed 7 Mar. 2026].
+- Schneier, B. (2015). Applied Cryptography: Protocols, Algorithms, and Source Code in C. 20th Anniversary Edition. Hoboken: John Wiley & Sons. (Chapter 1: Foundations).
 
